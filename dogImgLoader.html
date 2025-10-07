@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid white;
+            border-radius: 50%;
+            border-top: 5px solid #3498db;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        img{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+
+</head>
+<body>
+<button id="get-dog">Show Dog</button>
+<div class="loader"></div>
+<div id="dog-container"></div>
+
+<script>
+    const dogBtn = document.getElementById('get-dog');
+    const dogContainer = document.getElementById('dog-container');
+    const loader = document.querySelector('.loader');
+
+
+    dogBtn.addEventListener('click', async () => {
+        loader.style.display = 'block';
+        // 👉 your job: fetch from "https://dog.ceo/api/breeds/image/random"
+        try {
+            const response = await fetch('https://dog.ceo/api/breeds/image/random');
+            const dogPicture = await response.json();
+
+            if (dogContainer.children.length > 0) {
+                dogContainer.removeChild(dogContainer.children[0]);
+            }
+
+            const img = document.createElement('img');
+            img.src = dogPicture.message;
+            img.alt = "A random dog breed";
+            dogContainer.appendChild(img);
+
+        }
+        catch (error) {
+            console.error("Failed to fetch or display dog picture:", error);
+        }
+        finally{
+            loader.style.display = 'none';
+        }
+
+
+    });
+</script>
+
+</body>
+</html>

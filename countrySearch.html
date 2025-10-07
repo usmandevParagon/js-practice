@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<input type="text" id="country-input" placeholder="Enter country name">
+<button id="search-country">Search</button>
+<div id="country-info"></div>
+
+<script>
+
+    const countryBtn = document.getElementById('search-country');
+    const countryInput = document.getElementById('country-input');
+    const countryInfo = document.getElementById('country-info');
+
+    countryBtn.addEventListener('click', async () => {
+
+        try {
+            const name = countryInput.value;
+            const response = await fetch(`https://restcountries.com/v3.1/name/${name}`);
+            const countries = await response.json();
+            console.log(countries);
+            const capital = document.createElement('span');
+            capital.textContent = countries[0].capital[0];
+            const population = document.createElement('span');
+            population.textContent = countries[0].population;
+            if(countryInfo.children.length > 0){
+                countryInfo.innerHTML = "";
+            }
+
+            countryInfo.appendChild(capital);
+            countryInfo.appendChild(document.createElement('br'));
+            countryInfo.appendChild(population);
+        }
+        catch(err) {
+            console.log(err);
+        }
+
+
+
+
+    });
+</script>
+
+</body>
+</html>

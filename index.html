@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>task</title>
+    <style>
+        .completed span {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+    </style>
+</head>
+<body>
+<input type="text" id="todo-input" placeholder="Enter a task">
+<button id="add-btn">Add</button>
+
+<ul id="todo-list"></ul>
+
+<script>
+    window.addEventListener('load', () => {
+        const addBtn = document.querySelector('#add-btn');
+        const todoInput = document.querySelector('#todo-input');
+        const todoList = document.querySelector('#todo-list');
+
+
+        const saved = JSON.parse(localStorage.getItem('todos')) || [];
+        saved.forEach(todo => createTodoItem(todo.text, todo.completed));
+
+
+        addBtn.addEventListener('click', () => {
+            if (todoInput.value.trim() !== '') {
+                createTodoItem(todoInput.value, false);
+                saveTodos();
+                todoInput.value = '';
+            }
+        });
+
+        function createTodoItem(text, completed) {
+            const li = document.createElement('li');
+            const span = document.createElement('span');
+            const delBtn = document.createElement('button');
+            const editBtn = document.createElement('button');
+
+            span.textContent = text;
+            delBtn.textContent = 'X';
+            editBtn.textContent = 'Edit';
+
+            li.append(span, editBtn, delBtn);
+            if (completed) li.classList.add('completed');
+
+            // toggle complete
+            li.addEventListener('click', () => {
+                li.classList.toggle('completed');
+                saveTodos();
+            });
+
+            // delete
+            delBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                li.remove();
+                saveTodos();
+            });
+
+            // edit
+            editBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                editBtn.textContent = 'Save';
+                const editInput = document.createElement('input');
+                editInput.value = span.textContent;
+                li.replaceChild(editInput, span);
+
+                editInput.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') finishEdit();
+                });
+
+                editInput.addEventListener('blur', finishEdit);
+
+                function finishEdit() {
+                    span.textContent = editInput.value;
+                    li.replaceChild(span, editInput);
+                    editBtn.textContent = 'Edit';
+                    saveTodos();
+                }
+            });
+
+            todoList.appendChild(li);
+        }
+
+        // Save to localStorage
+        function saveTodos() {
+            const items = Array.from(todoList.children);
+            const todos = items.map(li => ({
+                text: li.querySelector('span').textContent,
+                completed: li.classList.contains('completed')
+            }));
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+    });
+</script>
+
+</body>
+</html>

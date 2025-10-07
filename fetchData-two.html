@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    .loader {
+        position: absolute;
+        display: none; /* Hidden by default */
+        border: 4px solid #3498db;
+        border-top: 4px solid #ffffff;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        margin: 10px 0;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+</style>
+<body>
+<button id="get-joke">Get</button>
+<div class="loader"></div>
+<ul id="jokes"></ul>
+
+<script>
+    const jokeBtn = document.getElementById('get-joke');
+    const jokeText = document.getElementById('jokes');
+
+
+    jokeBtn.addEventListener('click', async () => {
+        const loader = document.querySelector('.loader');
+        loader.style.display = 'flex';
+        // fetch('https://api.chucknorris.io/jokes/random')
+        //     .then((response) => response.json())
+        //     .then((jokes) => {
+        //         const li = document.createElement('li');
+        //         li.textContent = jokes.value;
+        //         jokeText.appendChild(li);
+        //     })
+        //     .catch((err) => console.log(err))
+        //     .finally(() => {
+        //         loader.style.display = 'none';
+        //     })
+
+        try {
+            const response = await fetch('https://api.chucknorris.io/jokes/random');
+            const jokes = await response.json();
+            const li = document.createElement('li');
+            li.textContent = jokes.value;
+            jokeText.appendChild(li);
+        }
+        catch(err){
+            jokeText.textContent = err.message;
+        }
+        finally {
+            loader.style.display = 'none';
+        }
+
+    });
+
+
+
+
+</script>
+
+
+</body>
+</html>
