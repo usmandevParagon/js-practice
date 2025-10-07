@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            width: 320px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+        }
+
+        button.delete {
+            background: red;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Expense Tracker</h1>
+
+    <form id="expense-form">
+        <input type="text" id="description" placeholder="Description" required />
+        <input type="number" id="amount" placeholder="Amount" required />
+        <input type="date" id="date" />
+        <button type="submit">Add Expense</button>
+    </form>
+
+    <h2>Total: $<span id="total">0</span></h2>
+
+    <ul id="expense-list"></ul>
+</div>
+
+<script>
+    const form = document.getElementById('expense-form');
+    const description= document.querySelector('#description');
+    const amount= document.querySelector('#amount');
+    const date= document.querySelector('#date');
+    const total= document.querySelector('#total');
+    const expList = document.querySelector('#expense-list');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if(description.value && amount.value && date.value){
+            const li = document.createElement('li');
+            const des = document.createElement('p');
+            const a = document.createElement('span');
+            const d = document.createElement('span');
+            des.textContent = description.value;
+
+            console.log(des.textContent);
+        }
+    })
+</script>
+</body>
+</html>
