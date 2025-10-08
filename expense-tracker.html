@@ -12,12 +12,13 @@
             justify-content: center;
             padding-top: 40px;
         }
+
         .container {
             background: #fff;
             padding: 20px;
             width: 320px;
             border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -51,19 +52,17 @@
             margin-bottom: 6px;
         }
 
-        button.delete {
+        .delete {
             background: red;
             color: white;
             border: none;
             padding: 4px 8px;
             cursor: pointer;
         }
-
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Expense Tracker</h1>
 
     <form id="expense-form">
         <input type="text" id="description" placeholder="Description" required />
@@ -78,25 +77,83 @@
 </div>
 
 <script>
-    const form = document.getElementById('expense-form');
-    const description= document.querySelector('#description');
-    const amount= document.querySelector('#amount');
-    const date= document.querySelector('#date');
-    const total= document.querySelector('#total');
+    const form = document.querySelector('#expense-form');
+    const description = document.querySelector('#description');
+    const amount = document.querySelector('#amount');
+    const date = document.querySelector('#date');
+    const total = document.querySelector('#total');
     const expList = document.querySelector('#expense-list');
 
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    // Render saved expenses on load
+    window.addEventListener('DOMContentLoaded', () => {
+        renderExpenses();
+        updateTotal();
+    });
+
+    // Handle form submit
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        if(description.value && amount.value && date.value){
-            const li = document.createElement('li');
-            const des = document.createElement('p');
-            const a = document.createElement('span');
-            const d = document.createElement('span');
-            des.textContent = description.value;
 
-            console.log(des.textContent);
-        }
-    })
+        const newExpense = {
+            id: Date.now(),
+            description: description.value,
+            amount: parseFloat(amount.value),
+            date: date.value || new Date().toISOString().split('T')[0]
+        };
+
+        expenses.push(newExpense);
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+
+        renderExpenses();
+        updateTotal();
+        form.reset();
+    });
+
+    // Render all expenses
+    function renderExpenses() {
+        expList.innerHTML = '';
+
+
+        expenses.forEach(exp => {
+            const li = document.createElement('li');
+
+            const info = document.createElement('div');
+            info.innerHTML = `<strong>${exp.description}</strong><br><small>${exp.date}</small>`;
+
+
+
+            const right = document.createElement('div');
+            right.innerHTML = `<span>$${exp.amount.toFixed(2)}</span>`;
+
+            const delBtn = document.createElement('button');
+            delBtn.textContent = 'X';
+            delBtn.classList.add('delete');
+            delBtn.addEventListener('click', () => deleteExpense(exp.id));
+
+
+            right.appendChild(delBtn);
+            li.appendChild(info);
+            li.appendChild(right);
+            expList.appendChild(li);
+        });
+    }
+
+    // Delete expense
+    function deleteExpense(id) {
+        expenses = expenses.filter(exp => exp.id !== id);
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+        renderExpenses();
+        updateTotal();
+    }
+
+    // Calculate total
+    function updateTotal() {
+        const totalAmount = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+        total.textContent = totalAmount.toFixed(2);
+    }
+
 </script>
 </body>
 </html>
